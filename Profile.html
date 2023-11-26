@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>File Gallery</title>
+    
+    <!-- Bootstrap CSS via CDN -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    
+    <style>
+        body {
+            background-color: #f8f9fa;
+            padding: 20px;
+        }
+
+        .pdf-viewer {
+            max-width: 100%;
+            height: 600px;
+            margin-bottom: 20px;
+        }
+
+        .image-grid {
+            margin-top: 20px;
+        }
+
+        .image-card {
+            margin-bottom: 20px;
+        }
+
+        .image-card img {
+            max-width: 100%;
+            height: auto;
+        }
+
+        .gallery-heading {
+            font-size: 24px;
+            font-weight: bold;
+            color: #007bff;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <!-- PDF Viewer for Curriculum Vitae -->
+        <div class="pdf-viewer">
+            <h2 class="gallery-heading">Curriculum Vitae</h2>
+            <embed src="CVs/Live.pdf" type="application/pdf" width="100%" height="100%">
+        </div>
+
+        <!-- Image Gallery for Awards and Achievements -->
+        <div class="image-grid mt-5">
+            <h2 class="gallery-heading">Awards and Achievements</h2>
+            <div class="row" id="awardsGallery"></div>
+        </div>
+
+        <!-- Image Gallery for Certifications -->
+        <div class="image-grid mt-5">
+            <h2 class="gallery-heading">Certifications</h2>
+            <div class="row" id="certificationsGallery"></div>
+        </div>
+
+        <!-- Dynamically generate image cards based on files in corresponding folders -->
+        <script>
+            function createImageGallery(containerId, folderPath, galleryHeading) {
+                const imageGalleryContainer = document.getElementById(containerId);
+                fetch(folderPath)
+                    .then(response => response.json())  // Assuming the server returns a JSON list of file names
+                    .then(imageFileNames => {
+                        imageFileNames.forEach((imageName) => {
+                            const imagePath = `${folderPath}/${imageName}`;
+                            const imageCard = document.createElement('div');
+                            imageCard.classList.add('col-md-4');
+                            imageCard.innerHTML = `
+                                <div class="card image-card">
+                                    <img src="${imagePath}" class="card-img-top" alt="${imageName}">
+                                    <div class="card-body">
+                                        <h5 class="card-title">${imageName}</h5>
+                                        <p class="card-text">Description for ${imageName}.</p>
+                                    </div>
+                                </div>
+                            `;
+                            imageGalleryContainer.appendChild(imageCard);
+                        });
+                    })
+                    .catch(error => console.error(`Error fetching ${folderPath} folder:`, error));
+            }
+
+            // Create image galleries for Awards and Achievements, and Certifications
+            createImageGallery('awardsGallery', 'Images/Awards', 'Awards and Achievements');
+            createImageGallery('certificationsGallery', 'Images/Certifications', 'Certifications');
+        </script>
+
+        <!-- Bootstrap JS and Popper.js via CDN (needed for Bootstrap functionality) -->
+        <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    </div>
+
+</body>
+</html>
